@@ -26,6 +26,7 @@ class RegistrationScreenController with ChangeNotifier {
             bg: Colors.green,
             context: context,
             message: "Registration successful");
+        // Navigator.pop(context);
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
