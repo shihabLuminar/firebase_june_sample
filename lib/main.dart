@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_june_sample/controller/home_screen_controller.dart';
 import 'package:firebase_june_sample/controller/login_screen_controller.dart';
 import 'package:firebase_june_sample/controller/registration_screen_controller.dart';
 import 'package:firebase_june_sample/firebase_options.dart';
@@ -23,7 +24,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
             create: (context) => RegistrationScreenController()),
-        ChangeNotifierProvider(create: (context) => LoginScreenController())
+        ChangeNotifierProvider(create: (context) => LoginScreenController()),
+        ChangeNotifierProvider(create: (context) => HomeScreenController()),
       ],
       child: MaterialApp(
         home: SplashScreen(),

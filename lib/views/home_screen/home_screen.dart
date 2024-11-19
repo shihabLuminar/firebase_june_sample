@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_june_sample/controller/home_screen_controller.dart';
+import 'package:firebase_june_sample/main.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -11,7 +14,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final Stream<QuerySnapshot> _studentsStream =
       FirebaseFirestore.instance.collection('students').snapshots();
 
-  void _addOrEditStudent({Map<String, String>? student, int? index}) {
+  void _addOrEditStudent(
+      {Map<String, String>? student, int? index, String? id}) {
     final nameController = TextEditingController(text: student?['name'] ?? '');
     final phoneController =
         TextEditingController(text: student?['phone'] ?? '');
@@ -32,6 +36,15 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              InkWell(
+                onTap: () {
+                  print("helloo");
+                  context.read<HomeScreenController>().pickImage();
+                },
+                child: CircleAvatar(
+                  radius: 80,
+                ),
+              ),
               TextField(
                 controller: nameController,
                 decoration: InputDecoration(labelText: 'Name'),
@@ -49,18 +62,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ElevatedButton(
                 onPressed: () {
                   final newStudent = {
-                    'name': nameController.text,
-                    'phone': phoneController.text,
-                    'course': courseController.text,
+                    "name": nameController.text,
+                    "ph": phoneController.text,
+                    "sub": courseController.text,
                   };
                   if (index != null) {
-                    setState(() {
-                      students[index] = newStudent;
-                    });
+                    HomeScreenController.editData(id: id!, data: newStudent);
                   } else {
-                    setState(() {
-                      students.add(newStudent);
-                    });
+                    HomeScreenController.addData(data: newStudent);
                   }
                   Navigator.of(ctx).pop();
                 },
@@ -71,12 +80,6 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
-  }
-
-  void _deleteStudent(int index) {
-    setState(() {
-      students.removeAt(index);
-    });
   }
 
   @override
@@ -111,12 +114,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         IconButton(
                             icon: Icon(Icons.edit),
                             onPressed: () {
-                              _addOrEditStudent(student: {}, index: index);
+                              _addOrEditStudent(
+                                  student: {},
+                                  index: index,
+                                  id: studentlist[index].id);
                             }),
                         IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () => _deleteStudent(index),
-                        ),
+                            icon: Icon(Icons.delete),
+                            onPressed: () {
+                              HomeScreenController.deleteData(
+                                  studentlist[index].id);
+                            }),
                       ],
                     ),
                   ),
